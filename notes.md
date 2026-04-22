@@ -122,7 +122,10 @@ NE LAZIM?
 2) Endpoint => GET /2/tweets/search/recent => son 7 günün postları gelir 
             => GET /2/tweets/counts/recent => sayı endopoint'ini ekleriz, eşleşen post sayısını verir
 
- # cleaning 
+BEARER_TOKEN = X'in tanıması için gerekli olan key
+query = ne aradığını söyler 
+
+# cleaning 
     text = re.sub(r"[^a-zA-ZğüşöçıİĞÜŞÖÇ\s]", "", text)  => türkçe karakterleri korur!!!! 
     Counter =>  elimizdeki listesi kelimeden kaç tane geçtiği ile birlikte bi dict çevirir
 
@@ -130,3 +133,16 @@ NE LAZIM?
 raw_titles => buraya başlıklar gelir 
 daily_count => temizlenmiş ve sayılmış günlük veri gelir 
 datasets => model için hazırlanan tablo gelir 
+
+import json => pythondaki list ve dict'i .json yapmak için importluyoruz 
+import os => klasor yoksa otomotik oluşturmaya yarar
+os.makedirs(os.path.dirname(filepath), exist_ok=True) => klasörü hazırlar 
+json.dump(data, file, ensure_ascii=False, indent = 4) => veriyi json'a çevirri, indent = dosya düzenli ve okunur olsun 
+if not os.path.exists(filepath): => dosya var mı yok mu kontrolu 
+
+
+all_words = set(today_counts.keys()) | set(yesterday_counts.keys())  => iki günün kelimeleri birleşir 
+
+Note=> 21'inde çalıştırmayı unuttuğum için 21 22 dosyası aynı sadece sonra keliemler sildim 
+
+Note => label = 1 if ... yazdığım için model benim kuralı öğreniyor, gerçek dünyayı değil, ilk versiyon için kalabilir
