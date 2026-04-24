@@ -146,3 +146,58 @@ all_words = set(today_counts.keys()) | set(yesterday_counts.keys())  => iki gün
 Note=> 21'inde çalıştırmayı unuttuğum için 21 22 dosyası aynı sadece sonra keliemler sildim 
 
 Note => label = 1 if ... yazdığım için model benim kuralı öğreniyor, gerçek dünyayı değil, ilk versiyon için kalabilir
+
+# SQL 
+python içinde küçük bi veritabanı kurup, trend sonuçlarını tablo halinde saklamak için kullanıyoruz
+SQL => veri tabanı ile konuşma dili 
+
+create_connection()  =>  database/trends.db dosyasına bağlanır, yoksa oluşturur.
+create_table() => trends adında tablo oluşturur, zaten varsa tekrar oluşturmaz 
+
+SQLite => hafif bir veritabanı sistemi
+Avantajı:
+ayrı kurulum gerektirmez,
+python içinde sqlite3 ile hazır gelir 
+küçük projeler için uygun 
+
+Neden veritabanına geçiyoruz?
+Sadece terminalde görmeyelim, bugün çıkan trendleri saklayalım, yarın yine ekleyelim, sonra geçmişe dönüp bakalım 
+Mesela => 22 nisan'da hangi trendler vardı, en çok tekrar eden kelime, hangi kelime kaç gğn trend olmuş
+!!! JSON ile de yapılır ama veritabanı ile çok daha temiz 
+
+os.makedirs(os.path.dirname(db_path), exist_ok=True) => klasör yoksa oluştur varsa sorun çıkartma 
+conn = sqlite3.connect(db_path) => trends.db dosyasına bağlan, dosya yoksa oluştur varsa bağlan 
+
+conn = conn.cursor() => cursor, veritabanına komut gönderen araç gibi düşünülebilir, !!!SQL komutları cursor ile çalışır 
+
+VALUES (?, ?, ?, ?, ?, ?, ?) => yer tutucu 
+
+# API
+Projedeki sonuçları dışarı çıkartmak istiyoruz 
+FastAPI => Python ile API yazmayı kolaylaştıran kütüphane, yani web sitesi yazmama gerek kalmadan, sadece python ile, şu adrese gelinirse bunu döndür demeni sağlar 
+Neden API kullandık? => çünkü projede veri var ve bu veriyi dışarı aktarmak istiyoruz. Bu sayede ileride dashboard kullanabiliyoruz, başka uygulamaya bağlayabiliyoruz, browser'dan test edebiliyoruz.
+
+app = FastAPI() => bir FastAPI uygulamaso oluşturuyoruz, endpoint'leri bu app nesnesine bağlıcaz 
+
+@app.get("/")  => eğer biri "/" adresine (home) GET isteği atarsa, fonk. çalıştır 
+
+def home() => endpoint çalışınca çalışacak Python fonks.
+!!! fonk. dict. dönüyor ama FastAPI bunu otomatik JSON yapar.
+
+çalıştırma kodu : uvicorn api.app:app --reload
+
+def get_db_connection() => veritabanına bağlanmak için yardımcı fonks.
+
+import joblib => model dosyası yüklemek için 
+
+http://127.0.0.1:8000/docs => dosyaları görmek için bu adrese girmelisin 
+
+dataset_files.sort(key = os.path.getatime) => son değiştirilme tarihine göre sırala 
+
+# Dashboard/ Streamlit 
+Dashboard temel mantığı => Streamlit arayüzü açılıyor, FastAPI'dan veri istiyor, gelen JSON'u tablo/grafik olarak gösteriyor
+streamlit => ekranda başlık, tablo, input, buton gibi şeyler göstermemizi sağlar 
+requests => fastAPI'ya istek atmak için kullanılır. 
+
+response = requests.get(f"{API_URL}/top-words") => FastAPI'daki /top-words endpoint'ine gider
+if response.status_code == 200 => API başarılı demek 

@@ -2,6 +2,7 @@ import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report
+import joblib 
 
 def train_model(dataset_path):
     df = pd.read_csv(dataset_path)
@@ -18,5 +19,6 @@ def train_model(dataset_path):
     print("\nAccuracy: ", accuracy_score(y_test, y_pred))
     print("\nClassification Report: \n")
     print(classification_report(y_test, y_pred))
+    joblib.dump(model, "model/model.pkl")
 
     return model
